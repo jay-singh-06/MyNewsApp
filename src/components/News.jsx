@@ -1,188 +1,74 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
 import NewsItem from "./NewsItem";
 import Spinner from "./Spinner";
 import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export class News extends Component {
-  static defaultProps = {
-    country: "in",
-    pageSize: 8,
-    category: "general",
-  };
-
-  static propTypes = {
-    country: PropTypes.string,
-    pageSize: PropTypes.number,
-    category: PropTypes.string,
-  };
-  capitalizeFirstLetter = (string) => {
+const News = (props) => {
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(1);
+  const [totalResults, setTotalResults] = useState(0);
+  const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
   };
 
-  articles = [
-    {
-      source: { id: "news-com-au", name: "News.com.au" },
-      author: null,
-      title: "Cricket fan killed in tragic accident",
-      description: null,
-      url: "https://www.news.com.au/national/elderly-cricket-spectator-killed-by-falling-tree-at-gracedale-park-in-melbourne/news-story/2678aa05292d2415e594d08ce740042b",
-      urlToImage: null,
-      publishedAt: "2026-01-10T09:52:14.542649Z",
-      content: null,
-    },
-    {
-      source: { id: "al-jazeera-english", name: "Al Jazeera English" },
-      author: "Tauseef Ahmad, Sajid Raina",
-      title:
-        "India-Bangladesh tensions rock cricket, as sport turns diplomatic weapon",
-      description:
-        "Indian league dumps Bangladeshi bowler amid bilateral tensions, prompting cricket’s latest political crisis.",
-      url: "https://www.aljazeera.com/news/2026/1/10/india-bangladesh-tensions-rock-cricket-as-sport-turns-diplomatic-weapon",
-      urlToImage:
-        "https://www.aljazeera.com/wp-content/uploads/2026/01/AP25051480465563-1768024013.jpg?resize=1920%2C1440",
-      publishedAt: "2026-01-10T06:17:04Z",
-      content:
-        "New Delhi, India  On January 3, 2026, a single directive from the Board of Control for Cricket in India (BCCI) quietly ended the Indian Premier League (IPL) season of Bangladeshs only cricketer in th… [+10436 chars]",
-    },
-    {
-      source: { id: "espn-cric-info", name: "ESPN Cric Info" },
-      author: null,
-      title:
-        "PCB hands Umar Akmal three-year ban from all cricket | ESPNcricinfo.com",
-      description:
-        "Penalty after the batsman pleaded guilty to not reporting corrupt approaches | ESPNcricinfo.com",
-      url: "http://www.espncricinfo.com/story/_/id/29103103/pcb-hands-umar-akmal-three-year-ban-all-cricket",
-      urlToImage:
-        "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1099495_800x450.jpg",
-      publishedAt: "2020-04-27T11:41:47Z",
-      content:
-        "Umar Akmal's troubled cricket career has hit its biggest roadblock yet, with the PCB handing him a ban from all representative cricket for three years after he pleaded guilty of failing to report det… [+1506 chars]",
-    },
-    {
-      source: { id: "espn-cric-info", name: "ESPN Cric Info" },
-      author: null,
-      title:
-        "What we learned from watching the 1992 World Cup final in full again | ESPNcricinfo.com",
-      description:
-        "Wides, lbw calls, swing - plenty of things were different in white-ball cricket back then | ESPNcricinfo.com",
-      url: "http://www.espncricinfo.com/story/_/id/28970907/learned-watching-1992-world-cup-final-full-again",
-      urlToImage:
-        "https://a4.espncdn.com/combiner/i?img=%2Fi%2Fcricket%2Fcricinfo%2F1219926_1296x729.jpg",
-      publishedAt: "2020-03-30T15:26:05Z",
-      content:
-        "Last week, we at ESPNcricinfo did something we have been thinking of doing for eight years now: pretend-live ball-by-ball commentary for a classic cricket match. We knew the result, yes, but we tried… [+6823 chars]",
-    },
-  ];
-
-  constructor(props) {
-    super(props);
-    console.log("Hello i am a constructor");
-    this.state = {
-      articles: this.articles,
-      loading: true,
-      page: 1,
-      totalResults: 0,
-    };
-    document.title = `${this.capitalizeFirstLetter(this.props.category)}- NewsMonkey`;
-  }
-
-  async updateNews() {
-    this.props.setProgress(10);
-    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
-    this.setState({ loading: true });
+  const updateNews = async () => {
+    props.setProgress(10);
+    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+    setLoading(true);
     let data = await fetch(url);
-    this.props.setProgress(30);
+    props.setProgress(30);
     let parsedData = await data.json();
-    this.props.setProgress(70);
-    console.log(parsedData);
-    this.setState({
-      articles: parsedData.articles,
-      totalResults: parsedData.totalResults,
-      loading: false,
-    });
-    this.props.setProgress(100);
-  }
+    props.setProgress(70);
+    setArticles(parsedData.articles);
+    setTotalResults(parsedData.totalResults);
+    setLoading(false);
 
-  async componentDidMount() {
-    console.log("cdm");
-    const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
-    this.setState({ loading: true });
-    let data = await fetch(url);
-    let parsedData = await data.json();
-    console.log(parsedData);
-    this.setState({
-      articles: parsedData.articles,
-      totalResults: parsedData.totalResults,
-      loading: false,
-    });
-  }
-
-  handlePrevClick = async () => {
-    // console.log("previous")
-    //   let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=6917a07455ab4bbcb3c3bb136eee6734&page=${this.state.page-1}&pageSize=${this.props.pageSize}`
-    //   this.setState({loading:true})
-    //   let data=await fetch (url);
-    //   let parsedData=await data.json()
-    //   console.log(parsedData)
-
-    //   this.setState({
-    //     page:this.state.page-1,
-    //     articles:parsedData.articles,
-    //     loading:false
-    //   })
-    this.setState({ page: this.state.page - 1 });
-    this.updateNews();
+    props.setProgress(100);
   };
 
-  handleNextClick = async () => {
-    // console.log("Next")
-    // if(!(this.state.page+1>Math.ceil(this.state.totalResults/this.props.pageSize))){
-    //  let url=`https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=6917a07455ab4bbcb3c3bb136eee6734&page=${this.state.page+1}&pageSize=${this.props.pageSize}`
-    //  this.setState({loading:true})
-    // let data=await fetch (url);
-    // let parsedData=await data.json()
-    // console.log(parsedData)
-    // this.setState({
-    //   page:this.state.page+1,
-    //   articles:parsedData.articles,
-    //   loading:false
-    // })
-    this.setState({ page: this.state.page + 1 });
-    this.updateNews();
+  useEffect(() => {
+   document.title = `${capitalizeFirstLetter(props.category)}- NewsMonkey`;
+    updateNews();
+  }, []);
+
+  const handlePrevClick = async () => {
+    setPage(page - 1);
+    updateNews();
   };
 
-    fetchMoreData = async () => {
-    const nextPage = this.state.page + 1;
-     const url = `https://newsapi.org/v2/top-headlines?country=${this.props.country}&category=${this.props.category}&apiKey=${this.props.apiKey}&page=${this.state.page}&pageSize=${this.props.pageSize}`;
+  const handleNextClick = async () => {
+    setPage(page + 1);
+    updateNews();
+  };
+
+  const fetchMoreData = async () => {
+    const nextPage = page + 1;
+    setPage(nextPage);
+    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${nextPage}&pageSize=${props.pageSize}`;
     let data = await fetch(url);
     let parsedData = await data.json();
-    this.setState({
-      page:nextPage,
-      articles: this.state.articles.concat(parsedData.articles),
-      totalResults: parsedData.totalResults,
-
-    })
+    setArticles((prev) => prev.concat(parsedData.articles));
+    setTotalResults(parsedData.totalResults);
   };
 
-  render() {
-    return (
-      <div className="container my-3">
-        <h1 className="text-center">
-          NewsMonkey-Top {this.capitalizeFirstLetter(this.props.category)}{" "}
-          Headlines
-        </h1>
-        {this.state.loading && <Spinner/>}
+  return (
+    <div className="container my-3">
+      <h1 className="text-center" style={{margin:'35px 0px',marginTop:'90px'}}>
+        NewsMonkey-Top {capitalizeFirstLetter(props.category)} Headlines
+      </h1>
+      {loading && <Spinner />}
 
-        <InfiniteScroll
-          dataLength={this.state.articles.length}
-          next={this.fetchMoreData}
-          hasMore={this.state.articles.length!==this.state.totalResults}
-          loader={<Spinner/>}
-        >
-          <div className="container">
+      <InfiniteScroll
+        dataLength={articles.length}
+        next={fetchMoreData}
+        hasMore={articles.length < totalResults}
+        loader={<Spinner />}
+      >
+        <div className="container">
           <div className="row">
-            {this.state.articles.map((element) => {
+            {articles.map((element) => {
               return (
                 <div className="col-md-4" key={element.url}>
                   <NewsItem
@@ -201,12 +87,12 @@ export class News extends Component {
                 </div>
               );
             })}
-            </div>
           </div>
-        </InfiniteScroll>
+        </div>
+      </InfiniteScroll>
 
-        {/* if you want website in prev,next button control */}
-        {/* <div className="container d-flex justify-content-between">
+      {/* if you want website in prev,next button control */}
+      {/* <div className="container d-flex justify-content-between">
           <button
             disabled={this.state.page <= 1}
             type="button"
@@ -218,7 +104,7 @@ export class News extends Component {
           <button
             disabled={
               this.state.page + 1 >
-              Math.ceil(this.state.totalResults / this.props.pageSize)
+              Math.ceil(this.state.totalResults / props.pageSize)
             }
             type="button"
             className="btn btn-dark"
@@ -227,9 +113,20 @@ export class News extends Component {
             Next &rarr;
           </button>
         </div> */}
-      </div>
-    );
-  }
-}
+    </div>
+  );
+};
+
+News.defaultProps = {
+  country: "in",
+  pageSize: 8,
+  category: "general",
+};
+
+News.propTypes = {
+  country: PropTypes.string,
+  pageSize: PropTypes.number,
+  category: PropTypes.string,
+};
 
 export default News;
