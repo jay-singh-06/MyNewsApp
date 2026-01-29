@@ -1,16 +1,52 @@
-# React + Vite
+# 📰 MyNewsApp
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern **React News Application** that provides real-time, category-wise news with infinite scrolling and smooth navigation.
 
-Currently, two official plugins are available:
+## ✨ Key Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 🔄 Infinite scrolling for seamless news loading
+- 🧭 Category-wise news (Science, Technology, Business, Sports, Entertainment, etc.)
+- 📌 Sticky navigation bar for easy category access
+- 🔗 "Read More" option to view full articles
+- 🛣️ Client-side routing using React Router DOM
+- ⚡ Fast and optimized performance using Vite
+- 📱 Fully responsive design
 
-## React Compiler
+## 🛠️ Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React.js  
+- React Router DOM  
+- Vite  
+- JavaScript (ES6+)  
+- CSS  
 
-## Expanding the ESLint configuration
+## ⚙️ Getting Started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+```bash
+git clone https://github.com/jay-singh-06/MyNewsApp.git
+cd MyNewsApp
+npm install
+npm run dev
+```
+
+## 📸 Screenshots
+
+![Home Page](https://raw.githubusercontent.com/jay-singh-06/MyNewsApp/main/screenshots/home.png)
+![Science Page](https://raw.githubusercontent.com/jay-singh-06/MyNewsApp/main/screenshots/science.png)
+![Mobile View](https://raw.githubusercontent.com/jay-singh-06/MyNewsApp/main/screenshots/mobile.png)
+
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory and add:
+
+```env
+VITE_NEWS_API_KEY=your_api_key_here
+```
+
+## 👨‍💻 Author
+
+**Jay Singh**  
+GitHub: https://github.com/jay-singh-06  
+LinkedIn: https://www.linkedin.com/in/jay-singh-06/
+
+
