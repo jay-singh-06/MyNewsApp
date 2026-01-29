@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const News = (props) => {
+  const { category, apiKey } = props;
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
@@ -15,7 +16,9 @@ const News = (props) => {
 
   const updateNews = async () => {
     props.setProgress(10);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
+      console.log("Category:", category);
+  console.log("API Key exists:", !!apiKey);
+    const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}&page=${page}&pageSize=20`;
     setLoading(true);
     let data = await fetch(url);
     props.setProgress(30);
@@ -46,20 +49,22 @@ const News = (props) => {
   const fetchMoreData = async () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&apiKey=${props.apiKey}&page=${nextPage}&pageSize=${props.pageSize}`;
+    const url = `https://newsapi.org/v2/top-headlines?country=us&category=${category}&apiKey=${apiKey}&page=${nextPage}&pageSize=20`;
     let data = await fetch(url);
     let parsedData = await data.json();
     setArticles((prev) => prev.concat(parsedData.articles));
     setTotalResults(parsedData.totalResults);
   };
 
+  if (loading) {
+  return <Spinner />;
+}
+
   return (
     <div className="container my-3">
       <h1 className="text-center" style={{margin:'35px 0px',marginTop:'90px'}}>
         NewsMonkey-Top {capitalizeFirstLetter(props.category)} Headlines
       </h1>
-      {loading && <Spinner />}
-
       <InfiniteScroll
         dataLength={articles.length}
         next={fetchMoreData}

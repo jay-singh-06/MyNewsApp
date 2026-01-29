@@ -6,7 +6,8 @@ import LoadingBar from "react-top-loading-bar";
 import {BrowserRouter as Router,Routes,Route,} from "react-router-dom";
 
   const App=()=> {
-  const apiKey=import.meta.env.VITE_NEWS_API;
+  const apiKey=import.meta.env.VITE_NEWS_API_KEY;
+;
 
   const [progress,setProgress]=useState(0)
 
